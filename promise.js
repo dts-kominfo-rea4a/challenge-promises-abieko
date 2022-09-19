@@ -1,16 +1,26 @@
 const { promiseTheaterIXX, promiseTheaterVGC } = require("./external.js");
 
 // TODO: Buat fungsi promiseOutput sesuai ketentuan readme
-const promiseOutput = async (emosi) => {
-  // fetch data dari promise iix dan vgc
-  const moviesIxx = await promiseTheaterIXX();
-  const moviesVgc = await promiseTheaterVGC();
+const promiseOutput = (emosi) => {
+  return new Promise((resolve) => {
+    let total = 0;
+    promiseTheaterIXX()
+    .then((array1) => {
+      array1.forEach(data => {
+        if(data.hasil === emosi)
+          total += 1;
+      });
+      promiseTheaterVGC()
+      .then((array2) => {
+        array2.forEach(data => {
+          if(data.hasil === emosi)
+            total += 1;
+        });
 
-  // combine iix & vgc, filter berdasarkan emosi, lalu hitung jumlah member
-  return moviesIxx
-    .concat(moviesVgc)
-    .filter((i) => i.hasil === emosi)
-    .length;
+        return resolve(total);
+      });
+    });
+  });
 };
 
 module.exports = {
